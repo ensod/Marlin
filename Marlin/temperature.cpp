@@ -622,8 +622,23 @@ float Temperature::get_pid_output(int e) {
     #endif //PID_DEBUG
 
   #else /* PID off */
+/*
+Peltier print-head: cooling-heating
+*/  
+    #if ENABLED(PELTIER_HE0) 
+      if (HOTEND_INDEX == 0){
+        #if ENABLED(PELTIER_HE0)
+          pid_output = (current_temperature[HOTEND_INDEX] > target_temperature[HOTEND_INDEX]) ? PID_MAX : 0;
+        #else 
+          pid_output = (current_temperature[HOTEND_INDEX] < target_temperature[HOTEND_INDEX]) ? PID_MAX : 0;
+        #endif
+      }
+      
+    #else
     pid_output = (current_temperature[HOTEND_INDEX] < target_temperature[HOTEND_INDEX]) ? PID_MAX : 0;
   #endif
+
+ #endif
 
   return pid_output;
 }
